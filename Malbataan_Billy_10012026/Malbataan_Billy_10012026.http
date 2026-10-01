@@ -1,0 +1,6 @@
+@Malbataan_Billy_10012026_HostAddress = http://localhost:5098
+
+GET {{Malbataan_Billy_10012026_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
