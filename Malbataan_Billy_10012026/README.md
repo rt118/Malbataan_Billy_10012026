@@ -89,13 +89,10 @@ Add the key to configuration
    - Enter `Aggregate` for CSV uploads.
    - Click **Execute** and inspect the response.
 
+    
+# POST `/api/UploadFile`
 
-# Upload endpoints 
-
-This section documents the upload endpoints in detail, including exact form fields, sample payloads for JSON and CSV, and example values for the `Filters` and `Aggregate` form fields.
-
-## Endpoint summary
-
+- This section documents the upload endpoints in detail, including exact form fields, sample payloads for JSON and CSV, and example values for the `Filters` and `Aggregate` form fields.
 - POST `/api/UploadFile/upload` — Accepts a multipart/form-data upload. Handles `.json` files (filtering) and `.csv` files (aggregation).
 - Validation: `Filters/FileValidatorAttribute` runs before controller action and may reject files by extension, content type or size.
 - Tracking: every upload produces a `FileProcessingRecord` persisted by `IUploadTrackingService`.
