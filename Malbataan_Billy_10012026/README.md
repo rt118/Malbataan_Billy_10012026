@@ -62,6 +62,34 @@ Notes:
 - The Dockerfile exposes `8080` and `8081`. Ensure ASPNETCORE_URLS environment variable includes the port(s) you map.
 - Use `docker logs -f malbataan` to stream container logs.
 
+
+
+## API Key authentication (X-API-KEY)
+
+The project includes a simple API key middleware implemented in `Validators/ApiKeyValidator.cs`. The middleware expects a single API key configured under `Authentication:ApiKey` and enforces it for requests whose path starts with `/api`.
+
+Behavior summary
+- Header: `X-API-KEY`
+- Configuration key: `Authentication:ApiKey`
+- If the configured key is missing the middleware constructor will throw; the middleware returns HTTP 401 when the header is missing or invalid.
+- Error payload:
+- { "Error": "Unauthorized Access", "Message": "The provided API Key is invalid or missing from the headers." }
+ 
+Add the key to configuration
+- appsettings.json (example)
+    { "Authentication": { "ApiKey": "your-strong-api-key-here" } }
+
+## Using the endpoints from Swagger UI
+1. Open `/swagger` in your browser.
+2. If an API key security scheme is present use **Authorize**, or add header `X-API-KEY` when executing.
+3. For `POST /api/UploadFile/upload`:
+   - Click **Try it out**.
+   - Choose the `file` on disk.
+   - Paste `Filters` JSON object or array for JSON uploads.
+   - Enter `Aggregate` for CSV uploads.
+   - Click **Execute** and inspect the response.
+
+
 # Upload endpoints 
 
 This section documents the upload endpoints in detail, including exact form fields, sample payloads for JSON and CSV, and example values for the `Filters` and `Aggregate` form fields.
@@ -132,7 +160,8 @@ Id,Name,Department,Email,Salary,HiredDate 1,Alice Johnson,Sales,alice.johnson@ex
 CSV response (aggregation):
 { "Filename": "employees.csv", "TotalRecords": 4, "Column": "Salary", "Aggregate": "sum", "Value": 313000 }
 
-Aggregate values — semantics and examples
+## Aggregate values — semantics and examples
+
 - The `Aggregate` form field controls which aggregation the CSV processor computes. Accepted values:
   - `sum` — Sum of the chosen numeric column.
     - Example response:
@@ -168,8 +197,7 @@ Notes on aggregation behavior
   - If `Aggregate` is omitted the controller passes the default value `avg` from `UploadRequest`.
 
 
-
-### GET `/api/Report`
+# GET `/api/Report`
 
 Purpose  
 Returns processing counters and the most recent file processing records (newest first). Useful for quick health checks, diagnostics and verifying uploads were processed.
@@ -201,29 +229,3 @@ Field descriptions
   - `processingTimeMs` — measured processing duration.
   - `processedAtUtc` — UTC timestamp when processing completed.
 
-
-## API Key authentication (X-API-KEY)
-
-The project includes a simple API key middleware implemented in `Validators/ApiKeyValidator.cs`. The middleware expects a single API key configured under `Authentication:ApiKey` and enforces it for requests whose path starts with `/api`.
-
-Behavior summary
-- Header: `X-API-KEY`
-- Configuration key: `Authentication:ApiKey`
-- If the configured key is missing the middleware constructor will throw; the middleware returns HTTP 401 when the header is missing or invalid.
-- Error payload:
-- { "Error": "Unauthorized Access", "Message": "The provided API Key is invalid or missing from the headers." }
- 
-Add the key to configuration
-- appsettings.json (example)
-    { "Authentication": { "ApiKey": "your-strong-api-key-here" } }
-
-## Using the endpoints from Swagger UI
-1. Open `/swagger` in your browser.
-2. If an API key security scheme is present use **Authorize**, or add header `X-API-KEY` when executing.
-3. For `POST /api/UploadFile/upload`:
-   - Click **Try it out**.
-   - Choose the `file` on disk.
-   - Paste `Filters` JSON object or array for JSON uploads.
-   - Enter `Aggregate` for CSV uploads.
-   - Click **Execute** and inspect the response.
-   -
