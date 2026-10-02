@@ -4,11 +4,24 @@ using Malbataan_Billy_10012026.Models;
 using Malbataan_Billy_10012026.Services.Interfaces;
 using System;
 using System.Globalization;
+using System.Text.Json;
 
 namespace Malbataan_Billy_10012026.Services
 {
     public class CSVProcessorService : ICSVProcessorService
     {
+        private static readonly HashSet<string> Operators = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "avg", "sum", "min", "max", "count"
+        };
+
+        public string? Validate(string aggregate)
+        {
+            if (string.IsNullOrWhiteSpace(aggregate)) return "aggregate field is required."; 
+            if (!Operators.Contains(aggregate)) return $"unknown aggregate '{aggregate}'. Allowed: {string.Join(", ", Operators.Order())}."; 
+            return null;
+        }
+
         public async Task<CSVResponse> ProcessCSVFile(IFormFile file, string aggregate)
         {
             var op = aggregate.Trim().ToLowerInvariant();
@@ -35,7 +48,7 @@ namespace Malbataan_Billy_10012026.Services
                     "sum" => records.Sum(emp => emp.Salary),
                     "min" => records.Min(emp => emp.Salary),
                     "max" => records.Max(emp => emp.Salary),
-                    _ => totalEmployees
+                    "count" => totalEmployees
                 };
 
                 return new CSVResponse

@@ -5,8 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>d8a4dfe6-045e-4563-810a-af8f96e0c13c</UserSecretsId>
-    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+     <ContainerDevelopmentMode>Regular</ContainerDevelopmentMode>
   </PropertyGroup>
 
   <ItemGroup>

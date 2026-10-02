@@ -3,6 +3,7 @@ using Malbataan_Billy_10012026.Models;
 using Malbataan_Billy_10012026.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Data;
 using System.Diagnostics;
 using System.Text.Json;
 
@@ -101,6 +102,9 @@ namespace Malbataan_Billy_10012026.Controllers
         /// </summary>
         private async Task<IActionResult> HandleCSVAsync(IFormFile file, UploadRequest request, CancellationToken ct)
         {
+            var validateRule = _csvProcessor.Validate(request.Aggregate);
+            if (!string.IsNullOrEmpty(validateRule))
+                throw new Exception($"Invalid aggregate value: {validateRule}");
             var csvResult = await _csvProcessor.ProcessCSVFile(file, request.Aggregate); 
             return Ok(csvResult);
         }
