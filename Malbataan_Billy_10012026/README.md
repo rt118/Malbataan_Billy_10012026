@@ -226,3 +226,4 @@ Add the key to configuration
    - Paste `Filters` JSON object or array for JSON uploads.
    - Enter `Aggregate` for CSV uploads.
    - Click **Execute** and inspect the response.
+   -
