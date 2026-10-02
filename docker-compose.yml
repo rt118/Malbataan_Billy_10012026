@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: malbataan_billy_api:latest
+    ports:
+      - "8080:80"   # host:container
+    environment:
+      # pass your API key into configuration (maps to configuration key Authentication:ApiKey)
+      - Authentication__ApiKey=SecretKey_abc123XYZ!
+      - ASPNETCORE_ENVIRONMENT=Development
+    restart: unless-stopped
