@@ -10,6 +10,7 @@ namespace Malbataan_Billy_10012026.Extensions
             // Register processing services for DI. Scoped is a safe default for per-request lifetime.
             services.AddScoped<ICSVProcessorService, CSVProcessorService>();
             services.AddScoped<IJSONProcessorService, JSONProcessorService>();
+            services.AddSingleton<IUploadTrackingService, UploadTrackingService>();
             return services;
         }
     }

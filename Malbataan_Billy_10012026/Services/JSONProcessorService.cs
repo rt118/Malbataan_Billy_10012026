@@ -12,16 +12,16 @@ namespace Malbataan_Billy_10012026.Services
     {
         private static readonly HashSet<string> Operators = new(StringComparer.OrdinalIgnoreCase)
         {
-            "eq", "ne", "gt", "gte", "lt", "lte", "in", "contains", "icontains"
+            "eq", "ne", "gt", "gte", "lt", "lte", "in", "contains"
         };
 
         private static readonly JsonSerializerOptions options = new()
         {
-            PropertyNameCaseInsensitive = true // accepts "salary" and "Salary"
+            PropertyNameCaseInsensitive = true  
         };
 
         private static readonly Dictionary<string, PropertyInfo> Properties =
-      typeof(Employee)
+        typeof(Employee)
           .GetProperties(BindingFlags.Public | BindingFlags.Instance)
           .ToDictionary(p => p.Name, StringComparer.OrdinalIgnoreCase);
 
@@ -98,8 +98,7 @@ namespace Malbataan_Billy_10012026.Services
                         return e => prop.GetValue(e) is { } actual && allowed.Any(x => Equals(actual, x));
                     }
 
-                case "contains":
-                case "icontains":
+                case "contains": 
                     {
                         if (type != typeof(string))
                             throw new Exception(
@@ -109,7 +108,7 @@ namespace Malbataan_Billy_10012026.Services
                             throw new Exception($"'{op}' requires a string value.");
 
                         var needle = rule.Value.GetString() ?? string.Empty;
-                        var comparison = op == "icontains"
+                        var comparison = op == "contains"
                             ? StringComparison.OrdinalIgnoreCase
                             : StringComparison.Ordinal;
 
@@ -118,7 +117,7 @@ namespace Malbataan_Billy_10012026.Services
 
                 default:
                     throw new Exception(
-                        $"Unknown op '{rule.Op}'. Allowed: eq, ne, gt, gte, lt, lte, in, contains, icontains.");
+                        $"Unknown op '{rule.Op}'. Allowed: eq, ne, gt, gte, lt, lte, in, contains.");
             }
         }
 
@@ -130,7 +129,7 @@ namespace Malbataan_Billy_10012026.Services
                 var converted = value.Deserialize(prop.PropertyType, options);
                 if (converted is not null) return converted;
             }
-            catch (JsonException)
+            catch (JsonException ex)
             {
                 // fall through to the error below
             } 
