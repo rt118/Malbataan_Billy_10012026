@@ -1,47 +1,18 @@
+using Malbataan_Billy_10012026.Extensions;
 using Malbataan_Billy_10012026.Validators; 
-using Microsoft.OpenApi; 
+using Microsoft.OpenApi;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
- builder.Services.AddOpenApi(options =>
-{
-   //Define the API Key scheme safely
-    options.AddDocumentTransformer((document, context, cancellationToken) =>
-    {
-        // Fix the parent components container if null
-        document.Components ??= new OpenApiComponents();
 
-        // FIX: Explicitly initialize the SecuritySchemes dictionary if null
-        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
-     
-        if (!document.Components.SecuritySchemes.ContainsKey("ApiKeyScheme"))
-        {
-            document.Components.SecuritySchemes.Add("ApiKeyScheme", new OpenApiSecurityScheme
-            {
-                Type = SecuritySchemeType.ApiKey,
-                Name = "X-API-KEY",
-                In = ParameterLocation.Header,
-                Description = "Enter your secret API Key to execute this endpoint."
-            });
-
-            foreach (var path in document.Paths.Values)
-            {
-                foreach (var operation in path.Operations.Values)
-                {
-                    operation.Security ??= new List<OpenApiSecurityRequirement>(); 
-                    operation.Security.Add(new OpenApiSecurityRequirement {
-                            [ new OpenApiSecuritySchemeReference("ApiKeyScheme", document) ] = []
-                        });
-                }
-            }
-        } 
-        return Task.CompletedTask;
-    }); 
-});
+// Register processing services (CSV/JSON) via your extension
+builder.Services.AddProcessingServices(); 
+// Register OpenAPI configuration from extension
+builder.Services.AddCustomOpenApi();
 
 var app = builder.Build();
 
