@@ -27,20 +27,15 @@ namespace Malbataan_Billy_10012026.Services
                 using var csv = new CsvReader(reader, config);
                 var records = await csv.GetRecordsAsync<Employee>().ToListAsync();
 
-                int totalEmployees = records.Count;
-                double totalSalarySum = records.Sum(emp => emp.Salary);
-                double averageSalary = records.Average(emp => emp.Salary);
-                double minSalary = records.Min(emp => emp.Salary);
-                double maxSalary = records.Max(emp => emp.Salary);
-
+                int totalEmployees = records.Count; 
 
                 double result = op switch
                 {
-                    "avg" => averageSalary,
-                    "sum" => totalSalarySum,
-                    "min" => minSalary,
-                    "max" => maxSalary,
-                    _ => totalEmployees  
+                    "avg" => records.Average(emp => emp.Salary),
+                    "sum" => records.Sum(emp => emp.Salary),
+                    "min" => records.Min(emp => emp.Salary),
+                    "max" => records.Max(emp => emp.Salary),
+                    _ => totalEmployees
                 };
 
                 return new CSVResponse
@@ -53,8 +48,7 @@ namespace Malbataan_Billy_10012026.Services
                 };
             }
             catch (Exception ex)
-            {
-                // Handle exception as appropriate (e.g., log and/or rethrow)
+            { 
                 throw;
             }
         }
