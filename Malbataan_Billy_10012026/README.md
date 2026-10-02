@@ -90,14 +90,14 @@ Add the key to configuration
    - Click **Execute** and inspect the response.
 
     
-# POST `/api/UploadFile`
+## POST `/api/UploadFile`
 
 - This section documents the upload endpoints in detail, including exact form fields, sample payloads for JSON and CSV, and example values for the `Filters` and `Aggregate` form fields.
 - POST `/api/UploadFile/upload` — Accepts a multipart/form-data upload. Handles `.json` files (filtering) and `.csv` files (aggregation).
 - Validation: `Filters/FileValidatorAttribute` runs before controller action and may reject files by extension, content type or size.
 - Tracking: every upload produces a `FileProcessingRecord` persisted by `IUploadTrackingService`.
 
-## Multipart form fields
+### Multipart form fields
 
 - `file` (required)
   - Type: file part (IFormFile)
@@ -110,7 +110,7 @@ Add the key to configuration
   - Defaults to `avg` when omitted.
   - Processed only when the uploaded file is `.csv`.
 
-## Filter rule format (`Filters`)
+### Filter rule format (`Filters`)
 
 `Filters` must be a JSON object (single rule) or an array of rule objects. Each rule follows this shape:
 
@@ -134,12 +134,12 @@ Example single rule:
 Example multiple rules (Sales department and Salary > 60000):
 [ { "field": "Department", "op": "eq", "value": "Sales" }, { "field": "Salary", "op": "gt", "value": 60000 } ]
 
-## JSON upload — sample file and curl
+### JSON upload — sample file and curl
 
 Sample file `employees.json` (array of employee objects):
 [ { "Id": 1, "Name": "Alice Johnson", "Department": "Sales", "Email": "alice.johnson@example.com", "Salary": 72000, "HiredDate": "2021-03-15" }, { "Id": 2, "Name": "Bob Smith", "Department": "Engineering", "Email": "bob.smith@example.com", "Salary": 95000, "HiredDate": "2019-07-01" }, { "Id": 3, "Name": "Carla Gomez", "Department": "Sales", "Email": "carla.gomez@example.com", "Salary": 58000, "HiredDate": "2022-11-02" } ]
 
-## Expected response shapes (typical)
+### Expected response shapes (typical)
 
 JSON response (filtering):
 { "Filename": "employees.json", "TotalRecords": 3, "MatchedRecords": 1, "FiltersApplied": [ /* the rules / ], "Data": [ / matched objects */ ] }
@@ -149,7 +149,7 @@ Notes:
 - Processor returns a JSON response (e.g., `JSONResponse`) containing matched data, counts and applied filters.
 
 ---
-## CSV upload — sample file and curl
+### CSV upload — sample file and curl
 
 Sample file `employees.csv`:
 Id,Name,Department,Email,Salary,HiredDate 1,Alice Johnson,Sales,alice.johnson@example.com,72000,2021-03-15 2,Bob Smith,Engineering,bob.smith@example.com,95000,2019-07-01 3,Carla Gomez,Sales,carla.gomez@example.com,58000,2022-11-02 4,David Lee,Engineering,david.lee@example.com,88000,2020-08-20
@@ -157,7 +157,7 @@ Id,Name,Department,Email,Salary,HiredDate 1,Alice Johnson,Sales,alice.johnson@ex
 CSV response (aggregation):
 { "Filename": "employees.csv", "TotalRecords": 4, "Column": "Salary", "Aggregate": "sum", "Value": 313000 }
 
-## Aggregate values — semantics and examples
+### Aggregate values — semantics and examples
 
 - The `Aggregate` form field controls which aggregation the CSV processor computes. Accepted values:
   - `sum` — Sum of the chosen numeric column.
@@ -194,7 +194,7 @@ Notes on aggregation behavior
   - If `Aggregate` is omitted the controller passes the default value `avg` from `UploadRequest`.
 
 
-# GET `/api/Report`
+## GET `/api/Report`
 
 Purpose  
 Returns processing counters and the most recent file processing records (newest first). Useful for quick health checks, diagnostics and verifying uploads were processed.
